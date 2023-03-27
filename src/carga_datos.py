@@ -2,7 +2,7 @@ import sqlite3
 import json
 import csv
 
-con = sqlite3.connect('./sqlite-tools-win32-x86-3410000/PRACTICA1.db')
+con = sqlite3.connect('../sqlite/PRACTICA1.db')
 cursorObj = con.cursor()
 
 # Devices
@@ -22,7 +22,7 @@ def sql_insert_devices_port(rtbDevice, port):
     cursorObj.execute("INSERT INTO PORTS_DEVICE VALUES ('" + rtbDevice + "','" + port + "') ")
     con.commit()
 
-arch = open("./data/devices.json", "r")
+arch = open("../data/devices.json", "r")
 lines = json.load(arch)
 
 i = 0
@@ -42,7 +42,7 @@ while i < len(lines):
 def sql_insert_alerts(dateTime, sid, message, classification, priority, protocol, origin, destination, port):
     cursorObj.execute("INSERT INTO ALERTS VALUES ('" + str(dateTime) + "','" + str(sid) + "','" + message + "','" + str(classification) + "','" + str(priority) + "','" + str(protocol) + "','" + str(origin) + "','" + str(destination) + "','" + str(port) + "') ")
 
-arch = open("./data/alerts.csv", "r")
+arch = open("../data/alerts.csv", "r")
 lines = csv.reader(arch, delimiter=",")
 
 next(lines)

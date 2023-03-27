@@ -2,7 +2,7 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 
-con = sqlite3.connect('./sqlite-tools-win32-x86-3410000/PRACTICA1.db')
+con = sqlite3.connect('../sqlite/PRACTICA1.db')
 
 # Ejercicio 2
 query = con.execute("SELECT * FROM DEVICES")

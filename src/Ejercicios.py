@@ -41,3 +41,43 @@ print("Maximo: ",dPortsDevice["ports"].max(),"\n")
 print("Vulnerabilidades detectadas")
 print("Minimo: ",dDevices["vulnerabilities"].min())
 print("Maximo: ",dDevices["vulnerabilities"].max(),"\n")
+
+# Ejercicio 3
+query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1")
+cols = [column[0] for column in query.description]
+dAlertsJul1 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
+
+query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 2")
+cols = [column[0] for column in query.description]
+dAlertsJul2 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
+
+query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 3")
+cols = [column[0] for column in query.description]
+dAlertsJul3 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
+
+query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 1")
+cols = [column[0] for column in query.description]
+dAlertsAgo1 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
+
+query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 2")
+cols = [column[0] for column in query.description]
+dAlertsAgo2 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
+
+query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 3")
+cols = [column[0] for column in query.description]
+dAlertsAgo3 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
+
+    # Numero de observaciones
+print("Julio, Grave")
+print("Numero de observaciones: ",dAlertsJul1["sid"].count(),"\n")
+print("Julio, Media")
+print("Numero de observaciones: ",dAlertsJul2["sid"].count(),"\n")
+print("Julio, Baja")
+print("Numero de observaciones: ",dAlertsJul3["sid"].count(),"\n")
+print("Agosto, Grave")
+print("Numero de observaciones: ",dAlertsAgo1["sid"].count(),"\n")
+print("Agosto, Media")
+print("Numero de observaciones: ",dAlertsAgo2["sid"].count(),"\n")
+print("Agosto, Baja")
+print("Numero de observaciones: ",dAlertsAgo3["sid"].count(),"\n")
+

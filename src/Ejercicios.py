@@ -50,33 +50,27 @@ print("Minimo: ", dDevices["vulnerabilities"].min())
 print("Maximo: ", dDevices["vulnerabilities"].max(), "\n")
 
 # Ejercicio 3
-query = con.execute(
-    "SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1)")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1)")
 cols = [column[0] for column in query.description]
 dAlertsJul1 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute(
-    "SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 2)")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 2)")
 cols = [column[0] for column in query.description]
 dAlertsJul2 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute(
-    "SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 3)")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 3)")
 cols = [column[0] for column in query.description]
 dAlertsJul3 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute(
-    "SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 1)")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 1)")
 cols = [column[0] for column in query.description]
 dAlertsAgo1 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute(
-    "SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 2)")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 2)")
 cols = [column[0] for column in query.description]
 dAlertsAgo2 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute(
-    "SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 3)")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 3)")
 cols = [column[0] for column in query.description]
 dAlertsAgo3 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
@@ -162,10 +156,10 @@ df_problematic_ips.plot(kind='bar', x='origin', y='num')
 plt.title("10 IPs origen mas problematicas")
 plt.show()
 # Numero de alertas en el tiempo en una serie temporal
-query = con.execute("SELECT DATETIME, COUNT(*) AS num FROM ALERTS GROUP BY DATETIME ORDER BY DATETIME ASC LIMIT 10;")
+query = con.execute("SELECT DATETIME, COUNT(*) AS num FROM ALERTS GROUP BY DATETIME ORDER BY DATETIME ASC;")
 data = query.fetchall()
 df_alerts_category = pd.DataFrame(data, columns=['datetime', 'num'])
-df_alerts_category.plot(kind='bar', x='datetime', y='num')
+df_alerts_category.plot(kind='line', x='datetime', y='num')
 plt.title("Alertas en el tiempo")
 plt.show()
 # Numero de alertas por categoria en grafico de barras

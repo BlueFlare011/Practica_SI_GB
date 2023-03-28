@@ -9,6 +9,10 @@ query = con.execute("SELECT * FROM DEVICES")
 cols = [column[0] for column in query.description]
 dDevices = pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
 
+query = con.execute("select sum(case when ip = 'None' then 1 else 0 end + case when localization = 'None' then 1 else 0 end + case when services = 'None' then 1 else 0 end + case when insecures = 'None' then 1 else 0 end + case when vulnerabilities = 'None' then 1 else 0 end) as camposNone from devices;")
+cols = [column[0] for column in query.description]
+dDevicesNone = pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
+
 query = con.execute("SELECT COUNT(PORT) AS ports FROM PORTS_DEVICE GROUP BY RTB_DEVICE")
 cols = [column[0] for column in query.description]
 dPortsDevice = pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
@@ -17,8 +21,10 @@ query = con.execute("SELECT * FROM ALERTS")
 cols = [column[0] for column in query.description]
 dAlerts = pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
 
-    # Numero de dispositivos y campos missing o none
+    # Numero de dispositivos
 print("Numero de dispositivos: ",dDevices["id"].count(),"\n")
+    # Numero de campos missing o none
+print("Numero de campos missing: ",dDevicesNone["camposNone"].max(),"\n")
     # Numero de alertas
 print("Numero de alertas: ",dAlerts["sid"].count(),"\n")
     # Media y DE del total de puertos abiertos
@@ -43,41 +49,100 @@ print("Minimo: ",dDevices["vulnerabilities"].min())
 print("Maximo: ",dDevices["vulnerabilities"].max(),"\n")
 
 # Ejercicio 3
-query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1)")
 cols = [column[0] for column in query.description]
 dAlertsJul1 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 2")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 2)")
 cols = [column[0] for column in query.description]
 dAlertsJul2 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 3")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 3)")
 cols = [column[0] for column in query.description]
 dAlertsJul3 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 1")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 1)")
 cols = [column[0] for column in query.description]
 dAlertsAgo1 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 2")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 2)")
 cols = [column[0] for column in query.description]
 dAlertsAgo2 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
-query = con.execute("SELECT * FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 3")
+query = con.execute("SELECT vulnerabilities FROM DEVICES WHERE IP IN (SELECT ORIGIN FROM ALERTS WHERE STRFTIME('%m',dateTime) = '07' AND PRIORITY = 1) OR  IP IN (SELECT DESTINATION FROM ALERTS WHERE STRFTIME('%m',dateTime) = '08' AND PRIORITY = 3)")
 cols = [column[0] for column in query.description]
 dAlertsAgo3 = pd.DataFrame.from_records(data=query.fetchall(), columns=cols)
 
     # Numero de observaciones
 print("Julio, Grave")
-print("Numero de observaciones: ",dAlertsJul1["sid"].count(),"\n")
+print("Numero de observaciones: ",dAlertsJul1["vulnerabilities"].count(),"\n")
 print("Julio, Media")
-print("Numero de observaciones: ",dAlertsJul2["sid"].count(),"\n")
+print("Numero de observaciones: ",dAlertsJul2["vulnerabilities"].count(),"\n")
 print("Julio, Baja")
-print("Numero de observaciones: ",dAlertsJul3["sid"].count(),"\n")
+print("Numero de observaciones: ",dAlertsJul3["vulnerabilities"].count(),"\n")
 print("Agosto, Grave")
-print("Numero de observaciones: ",dAlertsAgo1["sid"].count(),"\n")
+print("Numero de observaciones: ",dAlertsAgo1["vulnerabilities"].count(),"\n")
 print("Agosto, Media")
-print("Numero de observaciones: ",dAlertsAgo2["sid"].count(),"\n")
+print("Numero de observaciones: ",dAlertsAgo2["vulnerabilities"].count(),"\n")
 print("Agosto, Baja")
-print("Numero de observaciones: ",dAlertsAgo3["sid"].count(),"\n")
+print("Numero de observaciones: ",dAlertsAgo3["vulnerabilities"].count(),"\n")
+    # Numero de valores ausentes
+    # Mediana
+print("Julio, Grave")
+print("Mediana: ",dAlertsJul1["vulnerabilities"].median(),"\n")
+print("Julio, Media")
+print("Mediana: ",dAlertsJul2["vulnerabilities"].median(),"\n")
+print("Julio, Baja")
+print("Mediana: ",dAlertsJul3["vulnerabilities"].median(),"\n")
+print("Agosto, Grave")
+print("Mediana: ",dAlertsAgo1["vulnerabilities"].median(),"\n")
+print("Agosto, Media")
+print("Mediana: ",dAlertsAgo2["vulnerabilities"].median(),"\n")
+print("Agosto, Baja")
+print("Mediana: ",dAlertsAgo3["vulnerabilities"].median(),"\n")
+    # Media
+print("Julio, Grave")
+print("Media: ",dAlertsJul1["vulnerabilities"].mean(),"\n")
+print("Julio, Media")
+print("Media: ",dAlertsJul2["vulnerabilities"].mean(),"\n")
+print("Julio, Baja")
+print("Media: ",dAlertsJul3["vulnerabilities"].mean(),"\n")
+print("Agosto, Grave")
+print("Media: ",dAlertsAgo1["vulnerabilities"].mean(),"\n")
+print("Agosto, Media")
+print("Media: ",dAlertsAgo2["vulnerabilities"].mean(),"\n")
+print("Agosto, Baja")
+print("Media: ",dAlertsAgo3["vulnerabilities"].mean(),"\n")
+    # Varianza
+print("Julio, Grave")
+print("Varianza: ",dAlertsJul1["vulnerabilities"].var(),"\n")
+print("Julio, Media")
+print("Varianza: ",dAlertsJul2["vulnerabilities"].var(),"\n")
+print("Julio, Baja")
+print("Varianza: ",dAlertsJul3["vulnerabilities"].var(),"\n")
+print("Agosto, Grave")
+print("Varianza: ",dAlertsAgo1["vulnerabilities"].var(),"\n")
+print("Agosto, Media")
+print("Varianza: ",dAlertsAgo2["vulnerabilities"].var(),"\n")
+print("Agosto, Baja")
+print("Varianza: ",dAlertsAgo3["vulnerabilities"].var(),"\n")
+    # Maximo y minimo
+print("Julio, Grave")
+print("Maximo: ",dAlertsJul1["vulnerabilities"].max())
+print("Minimo: ",dAlertsJul1["vulnerabilities"].min(),"\n")
+print("Julio, Media")
+print("Maximo: ",dAlertsJul2["vulnerabilities"].max())
+print("Minimo: ",dAlertsJul2["vulnerabilities"].min(),"\n")
+print("Julio, Baja")
+print("Maximo: ",dAlertsJul3["vulnerabilities"].max())
+print("Minimo: ",dAlertsJul3["vulnerabilities"].min(),"\n")
+print("Agosto, Grave")
+print("Maximo: ",dAlertsAgo1["vulnerabilities"].max())
+print("Minimo: ",dAlertsAgo1["vulnerabilities"].min(),"\n")
+print("Agosto, Media")
+print("Maximo: ",dAlertsAgo2["vulnerabilities"].max())
+print("Minimo: ",dAlertsAgo2["vulnerabilities"].min(),"\n")
+print("Agosto, Baja")
+print("Maximo: ",dAlertsAgo3["vulnerabilities"].max())
+print("Minimo: ",dAlertsAgo3["vulnerabilities"].min(),"\n")
 
